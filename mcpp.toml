@@ -1,0 +1,43 @@
+# Module wrapper; upstream API preserved. Policy: mcpp-index/docs/mwrap.md.
+[package]
+namespace   = "mcpplibs.mwrap"
+name        = "miniaudio"
+version     = "0.11.25"
+description = "miniaudio 0.11.25 C++ modules for mcpp (import mcpplibs.mwrap.miniaudio;): audio playback and capture on every platform's native backend and Web Audio, decoding (WAV, FLAC, MP3), WAV encoding, conversion, resampling, the node graph and the high-level engine of miniaudio.h over compat.miniaudio, its macros as constants"
+license     = "Apache-2.0"
+authors     = ["mcpp-community"]
+repo        = "https://github.com/mcpplibs/miniaudio-m"
+platforms   = ["linux", "macos", "windows", "emscripten"]
+
+[targets.miniaudio]
+kind = "lib"
+
+[build]
+sources      = ["src/*.cppm", "src/*.cpp"]
+# <mwrap/miniaudio/macros.hpp>: the macros a C++ entity cannot be.
+include_dirs = ["include"]
+
+[dependencies]
+compat.miniaudio = "0.11.25"
+
+[dev-dependencies]
+compat.gtest = "1.15.2"
+
+[package.metadata.mwrap]
+upstream-version = "0.11.25"
+
+[[runtime.deploy]]
+from = "LICENSE"
+to   = "licenses/miniaudio"
+
+[[runtime.deploy]]
+from = "NOTICE"
+to   = "licenses/miniaudio"
+
+[[runtime.deploy]]
+from = "upstream/miniaudio/README.md"
+to   = "licenses/miniaudio/upstream/miniaudio"
+
+[[runtime.deploy]]
+from = "upstream/miniaudio/LICENSE"
+to   = "licenses/miniaudio/upstream/miniaudio"
