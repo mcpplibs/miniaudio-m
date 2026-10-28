@@ -1,0 +1,4 @@
+[template]
+description  = "Audio with import mcpplibs.mwrap.miniaudio: a tone from a waveform data source, encoded as WAV in memory, decoded back and measured, then played on the default device with --play"
+default      = true
+post_message = "Run `mcpp run`, or `mcpp run -- --play` to hear it on the default playback device."

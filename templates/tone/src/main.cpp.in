@@ -1,0 +1,80 @@
+// {{project.name}} — audio through import mcpplibs.mwrap.miniaudio, no device
+// needed: a 440 Hz tone from a waveform data source, encoded as a WAV file in
+// memory, decoded back and measured. `--play` then plays it on the default
+// playback device through the high-level engine.
+import std;
+import mcpplibs.mwrap.miniaudio;
+
+int main(int argc, char** argv) {
+    const bool play = argc > 1 && std::string_view(argv[1]) == "--play";
+    constexpr ma_uint32 rate = 48000, frames = rate;  // one second, mono
+
+    // A sine at half scale, as 16-bit samples.
+    const ma_waveform_config wconfig = ma_waveform_config_init(ma_format_s16, 1, rate, ma_waveform_type_sine, 0.5, 440);
+    ma_waveform wave;
+    ma_waveform_init(&wconfig, &wave);
+    std::vector<ma_int16> pcm(frames);
+    ma_waveform_read_pcm_frames(&wave, pcm.data(), frames, nullptr);
+    ma_waveform_uninit(&wave);
+
+    // Encoded as WAV into a byte vector, through the encoder's callbacks.
+    struct Sink {
+        std::vector<unsigned char> bytes;
+        std::size_t at = 0;
+    } sink;
+    const auto write = [](ma_encoder* e, const void* data, std::size_t n, std::size_t* written) -> ma_result {
+        auto& s = *static_cast<Sink*>(e->pUserData);
+        if (s.bytes.size() < s.at + n) s.bytes.resize(s.at + n);
+        std::memcpy(s.bytes.data() + s.at, data, n);
+        s.at += n;
+        *written = n;
+        return MA_SUCCESS;
+    };
+    const auto seek = [](ma_encoder* e, ma_int64 offset, ma_seek_origin origin) -> ma_result {
+        auto& s = *static_cast<Sink*>(e->pUserData);
+        s.at = static_cast<std::size_t>((origin == ma_seek_origin_start ? 0 : static_cast<ma_int64>(s.at)) + offset);
+        return MA_SUCCESS;
+    };
+    const ma_encoder_config econfig = ma_encoder_config_init(ma_encoding_format_wav, ma_format_s16, 1, rate);
+    ma_encoder encoder;
+    if (ma_encoder_init(write, seek, &sink, &econfig, &encoder) != MA_SUCCESS) return 1;
+    ma_encoder_write_pcm_frames(&encoder, pcm.data(), frames, nullptr);
+    ma_encoder_uninit(&encoder);
+
+    // Decoded back from memory, as f32, and measured.
+    const ma_decoder_config dconfig = ma_decoder_config_init(ma_format_f32, 0, 0);
+    ma_decoder decoder;
+    if (ma_decoder_init_memory(sink.bytes.data(), sink.bytes.size(), &dconfig, &decoder) != MA_SUCCESS) return 2;
+    std::vector<float> back(frames);
+    ma_uint64 read = 0;
+    ma_decoder_read_pcm_frames(&decoder, back.data(), frames, &read);
+    ma_decoder_uninit(&decoder);
+    double sum = 0, peak = 0;
+    for (float v : back) {
+        sum += double(v) * v;
+        peak = std::max(peak, double(std::abs(v)));
+    }
+    std::println("miniaudio {}: {} bytes of WAV, {} frames back at {} Hz, peak {:.3f}, rms {:.3f}", ma_version_string(),
+                 sink.bytes.size(), read, rate, peak, std::sqrt(sum / double(read)));
+    if (read != frames || std::abs(peak - 0.5) > 1e-3) return 3;
+
+    if (play) {
+        ma_engine engine;
+        if (ma_engine_init(nullptr, &engine) != MA_SUCCESS) {
+            std::println(std::cerr, "no playback device");
+            return 4;
+        }
+        ma_audio_buffer_config bconfig = ma_audio_buffer_config_init(ma_format_f32, 1, read, back.data(), nullptr);
+        bconfig.sampleRate = rate;
+        ma_audio_buffer buffer;
+        ma_audio_buffer_init(&bconfig, &buffer);
+        ma_sound sound;
+        ma_sound_init_from_data_source(&engine, &buffer, 0, nullptr, &sound);
+        ma_sound_start(&sound);
+        std::println("playing on {}", ma_engine_get_device(&engine)->playback.name);
+        while (!ma_sound_at_end(&sound)) std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        ma_sound_uninit(&sound);
+        ma_audio_buffer_uninit(&buffer);
+        ma_engine_uninit(&engine);
+    }
+}
