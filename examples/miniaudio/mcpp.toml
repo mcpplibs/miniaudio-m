@@ -1,0 +1,12 @@
+[package]
+name        = "miniaudio"
+version     = "0.1.0"
+description = "An audio file tool written against import mcpplibs.mwrap.miniaudio: file information (format, length, peak, RMS), conversion of WAV / FLAC / MP3 to WAV at any rate, channel count and sample format, tone generation, playback and device listing; tools/run_examples.py runs it on every CI row"
+license     = "Apache-2.0"
+
+[targets.miniaudio]
+kind = "bin"
+main = "src/main.cpp"
+
+[dependencies]
+"mcpplibs.mwrap.miniaudio" = { path = "../.." }
