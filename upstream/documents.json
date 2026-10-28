@@ -1,0 +1,18 @@
+{
+  "upstream": "https://github.com/mackron/miniaudio/archive/refs/tags/0.11.25.tar.gz",
+  "upstream_version": "0.11.25",
+  "upstream_sha256": "b900edcffe979816e2560a0580b9b1216d674b4f17fbadeca8f777a7f8ab0274",
+  "pruning": "Nothing of miniaudio is vendored: the library is compat.miniaudio 0.11.25, built from the same tag archive (upstream's miniaudio.c, which compiles miniaudio.h with MINIAUDIO_IMPLEMENTATION). Its README and license (a choice of the Unlicense / public domain or MIT No Attribution) are retained here.",
+  "documents": [
+    {
+      "path": "upstream/miniaudio/README.md",
+      "source": "https://github.com/mackron/miniaudio/blob/0.11.25/README.md",
+      "sha256": "3189aa9039ba073fab747948435e0fa5e279a32384c311ac87e9ff970eef037e"
+    },
+    {
+      "path": "upstream/miniaudio/LICENSE",
+      "source": "https://github.com/mackron/miniaudio/blob/0.11.25/LICENSE",
+      "sha256": "457f1b500e0adf6bc059edddfa78a2f62012e7c3bb43476c20e0bd23b25ba0eb"
+    }
+  ]
+}

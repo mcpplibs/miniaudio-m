@@ -1,0 +1,3 @@
+# Preserve upstream document bytes and original whitespace on every platform.
+upstream/** -text -whitespace
+tests/data/** binary
