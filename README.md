@@ -32,7 +32,7 @@ backend).
 ## Getting started
 
 ```sh
-mcpp new tone --template mcpplibs.mwrap.miniaudio@0.11.25
+mcpp new tone --template mcpplibs.mwrap.miniaudio@0.11.25.1
 cd tone
 mcpp run
 ```
@@ -43,7 +43,7 @@ measures it. `mcpp run -- --play` then plays it on the default device.
 
 ```toml
 [dependencies]
-"mcpplibs.mwrap.miniaudio" = "0.11.25"
+mcpplibs.mwrap.miniaudio = "0.11.25.1"
 ```
 
 ```cpp
