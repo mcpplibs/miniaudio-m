@@ -2,7 +2,7 @@
 [package]
 namespace   = "mcpplibs.mwrap"
 name        = "miniaudio"
-version     = "0.11.25"
+version     = "0.11.25.1"
 description = "miniaudio 0.11.25 C++ modules for mcpp (import mcpplibs.mwrap.miniaudio;): audio playback and capture on every platform's native backend and Web Audio, decoding (WAV, FLAC, MP3), WAV encoding, conversion, resampling, the node graph and the high-level engine of miniaudio.h over compat.miniaudio, its macros as constants"
 license     = "Apache-2.0"
 authors     = ["mcpp-community"]

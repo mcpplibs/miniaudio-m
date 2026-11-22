@@ -29,7 +29,7 @@ WAV、FLAC 与 MP3，编码 WAV，做格式转换与重采样，并通过节点�
 ## 快速开始
 
 ```sh
-mcpp new tone --template mcpplibs.mwrap.miniaudio@0.11.25
+mcpp new tone --template mcpplibs.mwrap.miniaudio@0.11.25.1
 cd tone
 mcpp run
 ```
@@ -39,7 +39,7 @@ WAV，再解码回来并测量。`mcpp run -- --play` 会在默认设备上播�
 
 ```toml
 [dependencies]
-"mcpplibs.mwrap.miniaudio" = "0.11.25"
+mcpplibs.mwrap.miniaudio = "0.11.25.1"
 ```
 
 ```cpp
