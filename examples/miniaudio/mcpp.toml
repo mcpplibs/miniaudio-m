@@ -9,4 +9,4 @@ kind = "bin"
 main = "src/main.cpp"
 
 [dependencies]
-"mcpplibs.mwrap.miniaudio" = { path = "../.." }
+mcpplibs.mwrap.miniaudio = { path = "../.." }
